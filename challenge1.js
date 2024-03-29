@@ -11,14 +11,19 @@ function grader(marks) {
     // Determine the grade based on the marks
     if (marks >= 90) {
       console.log("Grade: A");
+      return "Grade: A"
     } else if (marks >= 80) {
       console.log("Grade: B");
+      return "Grade: B"
     } else if (marks >= 70) {
       console.log("Grade: C");
+      return "Grade: C"
     } else if (marks >= 60) {
       console.log("Grade: D");
+      return "Grade: D"
     } else {
       console.log("Grade: F");
+      return "Grade: F"
     }
   } else {
     // If marks are not within the valid range, print an error message
@@ -27,4 +32,11 @@ function grader(marks) {
 }
 
 // Test the grader function with a sample marks value
-grader(78);
+//grader();
+let hung = 0;
+
+document.getElementById("mysubmit").onclick = function(){
+  hung = parseFloat(document.getElementById("mytext").value); // Parse input as a number
+  console.log("mytext", hung);
+  document.getElementById("answer").textContent = 'You were successfully graded,\n ' +grader(hung);
+};

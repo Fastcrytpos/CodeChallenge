@@ -1,15 +1,15 @@
-//declare all variables in the global scope and leave them undefined
+
 let grossIncome;
 let nssfDeductions;
 let nhifDeductions;
-let payAsYouEarn;
+let pAYE;
 let taxableIncome;
 let netSalary;
-//this function calculates the nssf payable based on the gross income and tier
+//TO calculate nssf
 function nssfDeductionsCalculator(grossPayInput) {
     //a gross income of less than  KSH 18,000 is charged at a rate of 6%
     const nssfRates = 0.06;
-    //any amount higher than 18000 is deducted KSH 1080
+    //any amount higher than 18000 is minus KSH 1080
     if (grossPayInput >= 18000) {
         nssfDeductions = 1080;
         return nssfDeductions
@@ -19,10 +19,10 @@ function nssfDeductionsCalculator(grossPayInput) {
         return nssfDeductions;
     }
 }
-
+//TO calculate nHIF
 function nhifDeductionsCalculator(grossPayInput) {
-    //NHIF deductions are done according to gross income brackets
-    switch (true) { // checks gross income bracket and returns the total deductions
+    
+    switch (true) {
         case grossPayInput <= 5999:
             return 150;
         case grossPayInput <= 7999:
@@ -59,73 +59,80 @@ function nhifDeductionsCalculator(grossPayInput) {
             return 1600;
         case grossPayInput >= 100000:
             return 1700;            
-        default:// returns undefined for an invalid case
+        default:
             return; 
     }
 }
 
-function payAsYouEarnCalculator(taxableIncomeInput) {
-    //set tax as zero
+function pAYECalculator(taxableIncomeInput) {
+    
     let tax = 0
     let newTaxableAmount;
-    if (taxableIncomeInput <= 24000) { //if taxable income is less than KSH 24000, income tax is zero
-        tax;
+    if (taxableIncomeInput <= 24000) { // KSH 24000==zero
+        tax=0;
     } else {
-        newTaxableAmount = taxableIncomeInput - 24000; //newTaxableAmount is the remainder after the first tax bracket amount is deducted
+        newTaxableAmount = taxableIncomeInput - 24000; // deduct
+
         if (newTaxableAmount >= 8333) {
+
             newTaxableAmount -= 8333;
-            //add KSH 2083 to tax
+            
             tax += 2083;
+
             if (newTaxableAmount <= 467667) {
-                // a tax rate of 30% for the remaing amount
+                
                 tax += (0.3 * newTaxableAmount);
-            }else if (newTaxableAmount > 467667) { //checks if the NewTaxableAmount surpasses the second tier boundary
+
+            }else if (newTaxableAmount > 467667) { 
                 newTaxableAmount -= 467667;
-                //adds total tax for the second tax bracket 
+                
                 tax += 140300;
+                
                 if (newTaxableAmount <= 300000) {
                     tax += (0.325 * newTaxableAmount)
-                }else if (newTaxableAmount > 300000) { // if remaining amount exceeds the third tier the total payable tax is added
+                }else if (newTaxableAmount > 300000) { 
                     tax += 97500;
                     newTaxableAmount -= 300000;
         
-                    if (newTaxableAmount >= 1 ) { // any amount remaining is charged at a rate of 35%
+                    if (newTaxableAmount >= 1 ) { 
                         tax += (newTaxableAmount * 0.35) 
                     }
                 }
             }
-        }else if (newTaxableAmount < 8333) { //a tax rate of 25% is applied for any amount that does not exceed ksh 8333
+        }else if (newTaxableAmount < 8333) { 
             tax = 0.25 * newTaxableAmount; 
         }
     }
-    return Math.round(tax); // return a whole number
+    return Math.round(tax); 
 }
 
 function netSalaryCalculator(grossPayInput) {
-    //user input validation
-    if (typeof grossPayInput !== 'number') {
-       return 'Please enter a number'        
-    }
-    //initializing variable with values returned from their respective functions
+   
     grossIncome = grossPayInput;
     nssfDeductions = nssfDeductionsCalculator(grossIncome);
     nhifDeductions = nhifDeductionsCalculator(grossIncome);
-    //calculate taxable income
-    taxableIncome = grossIncome - (nssfDeductions + nhifDeductions);
-    payAsYouEarn = payAsYouEarnCalculator(taxableIncome);  //taxable income is passed as the argument
-    //net salary calculation
-    netSalary = grossIncome - (nssfDeductions + nhifDeductions + payAsYouEarn)
+    taxableIncome = grossIncome - (nssfDeductions);
+    pAYE = pAYECalculator(taxableIncome);  
+    netSalary = grossIncome - (nssfDeductions + nhifDeductions + pAYE)
 
     
-    return { //returns an object
+    return { 
         'Gross Income': grossIncome,
         'NSSF Deductions': nssfDeductions,
-        'NHIF Deductions': nhifDeductions,
         'Taxable Income': taxableIncome,
-        'PAYE': payAsYouEarn,
+        'PAYE': pAYE,
+        'NHIF Deductions': nhifDeductions,
         'Net Salary': netSalary,
     }
 }
 
-//Enter input here
-console.table(netSalaryCalculator(880000));
+
+console.table(netSalaryCalculator(80000));
+
+let hung = 0;
+
+document.getElementById("mysibmit").onclick = function(){
+  hung = parseFloat(document.getElementById("mytixt").value); 
+  console.table("mytixt", hung);
+  document.getElementById("inswer").tableContent = netSalaryCalculator(hung);
+};
